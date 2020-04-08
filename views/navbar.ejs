@@ -1,0 +1,38 @@
+<%- include('cdn'); %>
+<div class="ui secondary  menu">
+    <a class="active item">
+      Home
+    </a>
+    <a class="item">
+      Messages
+    </a>
+    <a class="item">
+      Friends
+    </a>
+    <div class="right menu">
+      <div class="item">
+        <div class="ui icon input">
+          <input type="text" name="find" value="ritik"  placeholder="Search...">
+          <i class="search link icon" id="search"></i>
+        </div>
+      </div>
+      <a class="ui item" href="/<%= person %>/logout" id="logout">
+        Logout
+      </a>
+    </div>
+  </div>
+  <script>
+    $('#search').on('click',()=>{
+      let person = $('input').val();
+      $.ajax({
+        type: 'POST',
+        url: '/patient/find',
+        headers: {'Content-Type' : 'application/json'},
+        dataType: 'json',
+        data: JSON.stringify({ findValue: `${person}`})
+      }).then(response => {
+      console.log(response);})
+      .catch(err => console.log(err))
+    })
+
+  </script>

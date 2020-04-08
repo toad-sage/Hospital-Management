@@ -1,0 +1,28 @@
+<%- include('../cdn'); %>
+<h3 class="ui block header">
+        Hi, Receptionist Fill Details To Login
+</h3>
+<center style="margin: 5%;">
+    <form class="ui form"  method="POST" action="/reception/login">
+            <div class="field" style="width: 30%;">
+                <label>Email or Id</label>
+                <input type="text" name="email" placeholder="Email or Id">
+            </div>
+            <div class="field" style="width: 30%;"> 
+                <label>Password</label>
+                <input type="password" name="password" placeholder="Password">
+            </div>
+            <button class="ui button" type="submit">Submit</button>
+            <div class="field" style="width: 30%;margin: auto;margin-top: 5%;">
+                <center><a href="/reception/forgot" style="color: firebrick;font-size: 1.2em;">Forgot Password ????</a></center>
+            </div>
+    </form>
+</center>
+<% if(success == 1) { %>
+    <div class="ui warning message" style="width:40%;margin: auto;">
+            <div class="header">
+              Login Failed
+            </div>
+            Check your email and password
+          </div>
+<% } %>

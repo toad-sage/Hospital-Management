@@ -1,0 +1,99 @@
+<%- include('cdn') %>
+<h3 class="ui block header">
+    Oh, You Forgot The Password Scatterbrained!!
+</h3>
+<center style="margin: 5%;">
+<div class="ui form">
+        <div class="field" style="width: 30%;">
+            <label>Email</label>
+            <input type="email" name="email" id="mailAdd" placeholder="Email" required>
+        </div>
+        <button class="ui button" id="sendOtp">Send OTP</button>
+        <div style="display: none;" id="passwordBlock">
+            <div class="field" style="width: 30%;"> 
+                <label>New Password</label>
+                <input type="password" name="password" placeholder="Password" required>
+            </div>
+            <div class="field" style="width: 30%;"> 
+                <label>Enter OTP</label>
+                <input type="text" name="otp" placeholder="0000" required>
+            </div>
+            <button class="ui button" id='submitButton'>Change</button><br>
+        </div>
+</div>
+</center>
+<script>
+    let OTP;
+    let updateUrl = "/<%= people %>/update"; 
+    console.log(updateUrl);
+    
+    $('#sendOtp').on('click',()=>{
+        mailId = $('#mailAdd').val();
+        console.log(mailId)
+        $.ajax({
+            type: 'POST',
+            url: '/mail',
+            headers: {'Content-Type' : 'application/json'},
+            dataType: 'json',
+            data: JSON.stringify({mailId: `${mailId}`}) 
+        })
+        .then(response => {
+            OTP = response.OTP;
+            console.log(OTP)
+            return response;
+        })
+        .then((response) => display(response))
+        .catch(err => console.log(err));
+    });
+
+    function display(){
+        $('#passwordBlock').css('display','block');
+    }
+
+    $('#submitButton').on('click',()=>{
+        console.log(OTP);
+        let pass = $('input[name=password]').val();
+        let otp = $('input[name=otp]').val();
+        if(otp == OTP){
+            console.log('Same');
+            changePassword(mailId,pass);
+        }else{
+            $("body").append(`<div class="ui warning message" style="width:40%;margin: auto;">
+            <div class="header">
+              Updation Failed
+            </div>
+            Check your OTP
+          </div>`);
+        }
+    })
+
+    function changePassword(mailId,pass){
+        let updateUrl = "/<%= people %>/update";
+
+        $.ajax({
+            type: 'PUT',
+            url: updateUrl,
+            headers: {'Content-Type' : 'application/json'},
+            dataType: 'json',
+            data: JSON.stringify({
+                email: `${mailId}`,
+                password: `${pass}`
+            })
+        })
+        .then((response) => {
+            console.log('Entered')
+            console.log(response);
+            $('#mailAdd').val("");
+            $('input[name=password]').val("");
+            $('input[name=otp]').val("");
+            $('#passwordBlock').css('display','none');
+            $("body").append(`<div class="ui success message" style="width:40%;margin: auto;">
+            <div class="header">
+              Updation Successful
+            </div>
+            Go Back to login page for login
+          </div>`);
+            })
+        .catch((err)=> console.log(err))
+    }
+</script>
